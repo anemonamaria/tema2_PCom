@@ -2,10 +2,10 @@
 # Laborator 8: Multiplexare
 # Makefile
 
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -lm
 
 # Portul pe care asculta serverul (de completat)
-PORT = 12345
+PORT = 12363
 
 # Adresa IP a serverului (de completat)
 IP_SERVER = 127.0.0.1
@@ -24,11 +24,12 @@ subscriber: subscriber.c
 
 # Ruleaza serverul
 run_server:
-	./server ${PORT}
+	valgrind ./server ${PORT}
 
 # Ruleaza clientul
 run_subscriber:
-	./subscriber $(ID) ${IP_SERVER} ${PORT}
+	valgrind ./subscriber $(ID) ${IP_SERVER} ${PORT}
 
 clean:
 	rm -f server subscriber
+

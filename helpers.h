@@ -22,6 +22,10 @@ typedef struct Packet {
 	int sf;
 } Packet;
 
+
+#define PACKLEN sizeof(struct Packet)
+
+
 //structura pentru clinetii abonati
 struct online {
 	char topic[50];
@@ -39,8 +43,37 @@ typedef struct msg_tcp {
 
 //structura pentru mesaj UDP
 typedef struct msg_udp {
-	char topic[51];
+	char topic[50];
 	uint8_t type;
 	char continut[1501];
 } msg_udp;
+
+typedef struct topic{
+	char nume[51];
+	int sf;
+} topic;
+
+typedef struct client{
+	char id[10];
+	int socket;
+	int dim_topics;
+	int dim_unsent;
+	struct msg_tcp unsent[100];
+	struct topic topics[100];
+	int online; // 1 da 0 nu
+} client;
+
+
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
