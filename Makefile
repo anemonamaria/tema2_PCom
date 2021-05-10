@@ -24,11 +24,11 @@ subscriber: subscriber.c
 
 # Ruleaza serverul
 run_server:
-	valgrind ./server ${PORT}
+	./server ${PORT}
 
 # Ruleaza clientul
 run_subscriber:
-	valgrind ./subscriber $(ID) ${IP_SERVER} ${PORT}
+	./subscriber $(ID) ${IP_SERVER} ${PORT}
 
 clean:
 	rm -f server subscriber

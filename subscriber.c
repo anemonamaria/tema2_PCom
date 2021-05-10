@@ -15,6 +15,7 @@ int main(int argc, char** argv) {
 
 	setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
+	DIE(argc < 4, "arguments");
 
 	int tcp_sock = socket(AF_INET, SOCK_STREAM, 0);
 	DIE(tcp_sock < 0, "socket");
@@ -87,14 +88,14 @@ int main(int argc, char** argv) {
 		}
 		// mesajul de la server
 		if(FD_ISSET(tcp_sock, &aux_set)) {
-			char buffer[sizeof(struct msg_tcp)];
-			memset(buffer, 0, sizeof(struct msg_tcp));
+			char buffer[sizeof(struct tcp_struct)];
+			memset(buffer, 0, sizeof(struct tcp_struct));
 
-			int ret = recv(tcp_sock, buffer, sizeof(struct msg_tcp), 0);
+			int ret = recv(tcp_sock, buffer, sizeof(struct tcp_struct), 0);
 			DIE(ret < 0, "receive");
 
 			if(ret == 0) break;
-			struct msg_tcp *pack_send = (struct msg_tcp *)buffer;
+			struct tcp_struct *pack_send = (struct tcp_struct *)buffer;
 			printf("%s:%u - %s - %s - %s\n", pack_send->ip, pack_send->port,
 				pack_send->topic, pack_send->type, pack_send->continut);
 		}

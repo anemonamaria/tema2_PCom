@@ -1,0 +1,48 @@
+Moraru Anemona - Maria
+323CC
+
+Tema 2 - PC
+
+
+Pentru aceasta tema am folosit scheletul Makefile-ului din laboratorul 8, pe
+care l-am modificat prin adaugarea argumentelor primite de executabile, precum
+si fisierul helpers.h unde am ales sa imi definesc si structurile folosite.
+
+Structura Packet retine informatiile importante dintr-un pachet trimis catre
+server sau subscriber. Structura tcp_struct retine informatiile necesare
+care vor fi trimise clientului (structura in care retin daca un client este
+online sau nu pentru a verifica mai usor la conectarea unuia nou, mai exista un
+vector de topicuri retinute de fiecare client, dar si unul de mesaje netrimise
+care se vor trimite "avalansa"). Structura udp_struct contine informatiile
+necesare clientului udp. Iar in final, structura topic care retine topicul si
+sf-ul acestuia.
+
+SERVER.C
+
+Deschidem cei doi socketi pentru clientul tcp si clientul udp
+folosind comenzile pentru a seta optiunile socketilor. Socket-ului tcp i se
+aplica functia "listen()" ca  urmare asteptand conexiuni de la clienti tcp.
+Se creeaza file descriptor-ul pe care adaugam socketii si stdin-ul si alegem
+valoarea mai mare de input pentru functia "select()".
+In while(), verificam intai daca s-a primit o conexiune noua de la un client
+tcp. Aici verificam daca clientul primit este unul nou, reconectat sau online,
+in functie de fiecare situatie afisam la stdout mesaje conform cerintei. Daca
+este un client vechi dar online, la reconectare ii vom trimite toate pachetele
+netrimise. In al doilea if verificam daca am primit o conexiune de la un client
+udp. Aici aplic pasii explicati in cerinita la sectiunea 4 si retin informatiile
+intr-un mesaj tcp pe care il voi trimite in finalul if-ului. In al treilea caz,
+se verifica interactiunea cu stdin-ul din care se poate primi doar coamnda
+"exit" care are ca efect iesirea totala din while-ul server-ului. Altfel, se
+verifica ce tip de packet s-a primit de la subscriber. In cazul in care s-a
+primit subscribe <topic>, servelul va adauga in vectorul clientului de topic-
+uri. Daca s-a primit unsubscribe, vom elimina topicul din vector, iar daca s-a
+primit exit se va inchide server-ul.
+
+SUBSCRIBER.C
+
+Deschidem socket-ul tcp pentru conexiunea cu server-ul, cream file descriptor-
+ul pe care adaugam socket-ul si stdin-ul si trimitem catre server id-ul
+clientului care se va conecta. In while() verificam daca s-a primit o coamnda
+de la stdin, cu ajutorull ei completeaza informatiile unui pachet pe care apoi
+il trimite catre server. In cazul in care s-a primit un mesaj de la server se
+vor afisa la stdout informatiile conform cerintei.

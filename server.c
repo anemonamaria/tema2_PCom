@@ -15,12 +15,13 @@ int main(int argc, char** argv) {
 
 	setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
-	int clients_nr = 0, enable = 1;;
+	DIE(argc < 2, "arguments");
+
+	int enable = 1;
 	struct client *clients = calloc(1000, sizeof(struct client));
 
 	int udp_sock = socket(PF_INET, SOCK_DGRAM, 0);
 	int tcp_sock = socket(AF_INET, SOCK_STREAM, 0);
-
 	DIE(udp_sock < 0 || tcp_sock < 0, "socket");
 
 	struct sockaddr_in serv_addr, udp_addr, new_tcp;
@@ -104,7 +105,7 @@ int main(int argc, char** argv) {
 							inet_ntoa(new_tcp.sin_addr), ntohs(new_tcp.sin_port));
 						for(int k = 0; k < clients[found].dim_unsent; k++){
 							int ret = send(clients[found].socket, &clients[found].unsent[k],
-										sizeof(struct msg_tcp), 0);
+										sizeof(struct tcp_struct), 0);
 							DIE(ret < 0, "send");
 						}
 						clients[found].dim_unsent = 0;
@@ -119,14 +120,14 @@ int main(int argc, char** argv) {
 						&udp_len);
 					DIE(ret < 0, "revfrom");
 
-					struct msg_tcp send_to_tcp;
-					memset(&send_to_tcp, 0, sizeof(struct msg_tcp));
-					struct msg_udp *send_to_udp;
+					struct tcp_struct send_to_tcp;
+					memset(&send_to_tcp, 0, sizeof(struct tcp_struct));
+					struct udp_struct *send_to_udp;
 
 					send_to_tcp.port = htons(udp_addr.sin_port);
 					strcpy(send_to_tcp.ip, inet_ntoa(udp_addr.sin_addr));
 
-					send_to_udp = (struct msg_udp *)buffer;
+					send_to_udp = (struct udp_struct *)buffer;
 
 					strcpy(send_to_tcp.topic, send_to_udp->topic);
 					send_to_tcp.topic[50] = 0;
@@ -175,7 +176,7 @@ int main(int argc, char** argv) {
 							if (strcmp(clients[j].topics[k].nume, send_to_tcp.topic) == 0) {
 								if(clients[j].online){
 									int ret = send(clients[j].socket, &send_to_tcp,
-										sizeof(struct msg_tcp), 0);
+										sizeof(struct tcp_struct), 0);
 									DIE(ret < 0, "send");
 								} else {
 									if(clients[j].topics[k].sf == 1) {

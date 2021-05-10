@@ -13,7 +13,7 @@
 
 
 typedef struct Packet {
-	char type; // exit = e, subscribe = s, unsubscribe = u
+	char type;  // exit = e, subscribe = s, unsubscribe = u
 	char topic[51];
 	char tip_date;
 	char continut[1501];
@@ -22,18 +22,7 @@ typedef struct Packet {
 	int sf;
 } Packet;
 
-
-#define PACKLEN sizeof(struct Packet)
-
-
-//structura pentru clinetii abonati
-struct online {
-	char topic[50];
-	int sockets[500];
-} online;
-
-//structura pentru mesaj TCP
-typedef struct msg_tcp {
+typedef struct tcp_struct {
 	char ip[16];
 	uint16_t port;
 	char type[11];
@@ -41,8 +30,7 @@ typedef struct msg_tcp {
 	char continut[1501];
 } msg_tcp;
 
-//structura pentru mesaj UDP
-typedef struct msg_udp {
+typedef struct udp_struct {
 	char topic[50];
 	uint8_t type;
 	char continut[1501];
@@ -58,11 +46,12 @@ typedef struct client{
 	int socket;
 	int dim_topics;
 	int dim_unsent;
-	struct msg_tcp unsent[100];
+	struct tcp_struct unsent[100];
 	struct topic topics[100];
-	int online; // 1 da 0 nu
+	int online; // 1 online, 0 nu
 } client;
 
+#define PACKLEN sizeof(struct Packet)
 
 #endif
 
